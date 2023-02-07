@@ -27,29 +27,29 @@ int appendNode(struct node **head, pid_t data){
     return 0;
 }
 
-int applyFunction(struct node **head, int (*fc)(pid_t)){
+//TODO: error checking apply function
+
+int applyFunction(struct node **head, int (*fc)(struct node **, pid_t)){
     struct node* cur = *head;
+    int exit_code = 0;
     if (cur == NULL) {
-        printf("List is already empty\n");
         return 0;
     }
     while (cur != NULL) {
-        fc(cur->data);
+        if(fc(head, cur->data) != 0){
+            exit_code = 1;
+        };
         cur = cur->next;
     }
-    return 0;
+    return 1;
 }
-
-
-//implement size function
 
 pid_t popNode(struct node** head, pid_t pid) {
     struct node* current = *head;
     struct node* prev = NULL;
     pid_t data;
     if (*head == NULL) {
-        printf("List is empty\n");
-        return 0;
+        return 1;
     }
     while (current != NULL) {
         if(current->data == pid){
@@ -68,7 +68,7 @@ pid_t popNode(struct node** head, pid_t pid) {
         prev = current;
         current = current->next;
     }
-    return 0;
+    return 1;
 }
 
 pid_t peekNode(struct node** head) {
@@ -76,7 +76,6 @@ pid_t peekNode(struct node** head) {
     struct node* prev = NULL;
     pid_t data;
     if (*head == NULL) {
-        printf("List is empty\n");
         return 0;
     }
     while (cur->next != NULL) {
@@ -104,5 +103,16 @@ int printList(struct node * head){
         printf("Printing: %d\n",cur->data);
         cur = cur->next;
     }
+    return 0;
+}
+
+int size(struct node ** head){
+    struct node * cur = *head;
+    int size = 0;
+    while (cur != NULL) {
+        size ++;
+        cur = cur->next;
+    }
+    return size;
 }
 

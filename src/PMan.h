@@ -5,9 +5,10 @@
 
 struct node;
 int appendNode(struct node **head, int data);
-int applyFunction(struct node ** head, int (*fc)(pid_t));
+int applyFunction(struct node ** head, int (*fc)(struct node **, pid_t));
 pid_t popNode(struct node ** head, pid_t pid);
 pid_t peekNode(struct node ** head);
 int destroyList(struct node * head);
 int printList(struct node * head);
+int size(struct node ** head);
 #endif
