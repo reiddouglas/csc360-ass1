@@ -23,6 +23,7 @@ pstat pid -> lists information on process id pid
 #include <sys/signal.h>
 #include <limits.h>
 #include <errno.h>
+#include <time.h>
 
 #include "PMan.h"
 
@@ -219,7 +220,7 @@ int executeCMD(struct node ** head, char * args[]){
     }else if(strcmp(args[0],"pstat") == 0){
 
     }else if(strcmp(args[0],"exit") == 0){
-        printf("Exiting program...\n")
+        printf("Exiting program...\n");
         return 1;
     }else{
         printf("Invalid Input\n");
@@ -268,7 +269,7 @@ int main(){
             free(words[i]);
         }
         free(words);
-        sleep(0.5);
+        usleep(50000);
 
         //check if processes have finished executing (zombie) and handles them.
         handleZombies(&head);
@@ -278,7 +279,8 @@ int main(){
     killChildren(&head);
 
     handleZombies(&head);
-    
+
+    //waits for all processes to end (backup)
     while(wait(NULL) != -1);
 
     exit(0);
