@@ -2,13 +2,6 @@
 #include <stdlib.h>
 #include "PMan.h"
 
-struct node {
-    pid_t data;
-    struct node* next;
-};
-
-
-
 int appendNode(struct node **head, pid_t data){
     struct node * newNode = (struct node *)malloc(sizeof(struct node));
     newNode->data = data;
@@ -27,16 +20,14 @@ int appendNode(struct node **head, pid_t data){
     return 0;
 }
 
-//TODO: error checking apply function
-
-int applyFunction(struct node **head, int (*fc)(struct node **, pid_t)){
+int applyFunction(struct node **head, int (*fc)(struct node *)){
     struct node* cur = *head;
     int exit_code = 0;
     if (cur == NULL) {
         return 0;
     }
     while (cur != NULL) {
-        if(fc(head, cur->data) != 0){
+        if(fc(cur) != 0){
             exit_code = 1;
         };
         cur = cur->next;
@@ -44,46 +35,54 @@ int applyFunction(struct node **head, int (*fc)(struct node **, pid_t)){
     return 1;
 }
 
-pid_t popNode(struct node** head, pid_t pid) {
-    struct node* current = *head;
-    struct node* prev = NULL;
-    pid_t data;
-    if (*head == NULL) {
-        return 1;
-    }
-    while (current != NULL) {
-        if(current->data == pid){
-            data = current -> data;
+pid_t popNodes(struct node** head, int (*fc)(struct node *)) {
+
+    struct node *cur = *head;
+    struct node *prev = NULL;
+    
+    while (cur != NULL) {
+        if(fc(cur)){
             if(prev == NULL){
-                *head = current->next;
-                current->next = NULL;
-                free(current);
-            } else{
-                prev->next = current -> next;
-                current->next = NULL;
-                free(current);
+                *head = cur->next;
+                free(cur);
+                cur = *head;
+            }else{
+                prev->next = cur->next;
+                free(cur);
+                cur = prev->next;
             }
-            return data;
+        }else{
+            prev = cur;
+            cur = cur->next;
         }
-        prev = current;
-        current = current->next;
     }
-    return 1;
+    return 0;
 }
 
-pid_t peekNode(struct node** head) {
-    struct node* cur = *head;
-    struct node* prev = NULL;
-    pid_t data;
-    if (*head == NULL) {
-        return 0;
+int popNode(struct node** head, pid_t pid) {
+
+    struct node *cur = *head;
+    struct node *prev = NULL;
+    
+    while (cur != NULL) {
+        if(cur->data == pid){
+            if(prev == NULL){
+                *head = cur->next;
+                free(cur);
+                cur = *head;
+                return 0;
+            }else{
+                prev->next = cur->next;
+                free(cur);
+                cur = prev->next;
+                return 0;
+            }
+        }else{
+            prev = cur;
+            cur = cur->next;
+        }
     }
-    while (cur->next != NULL) {
-        prev = cur;
-        cur = cur->next;
-    }
-    data = cur->data;
-    return data;
+    return 1;
 }
 
 int destroyList(struct node * head){
