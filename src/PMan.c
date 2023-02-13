@@ -89,17 +89,28 @@ int bg(char * program, char ** args){
     exit(0);
 }
 
+
 int pidPath(struct node * node){
+    
+    char * filename = (char *)malloc(30 * sizeof(char));
+    sprintf(filename, "/proc/%d/exe", node->data);
 
-    char * command = (char *)malloc(45 * sizeof(char) + 2 * sizeof(pid_t));
-    sprintf(command,"ls -l /proc/%d/exe | awk '{print \"%d:   \" $NF}'",node->data,node->data);
+    char * filepath = (char *)malloc(261 * sizeof(char));
+    ssize_t length = readlink(filename, filepath, 261);
 
-    // int output = system(command);
-    if(system(command) != 0){
-        //signal error
+    //error check readlink
+    if (length < 0) {
+        fprintf(stderr, "Error with readlink: %s\n", strerror(errno));
+        free(filename);
+        free(filepath);
         return 1;
     }
-    free(command);
+
+    filepath[length] = '\0';
+    printf("%-d: %s\n", node->data, filepath);
+
+    free(filename);
+    free(filepath);
     return 0;
 }
 
