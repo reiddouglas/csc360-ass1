@@ -115,3 +115,6 @@ int size(struct node ** head){
     return size;
 }
 
+int isEmpty(struct node * head){
+    return (head == NULL);
+}

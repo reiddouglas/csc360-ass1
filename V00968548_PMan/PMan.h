@@ -1,9 +1,11 @@
 #ifndef HEADER_FILE
 #define HEADER_FILE
 
-#define MAX_ARG_LEN 255
+#define MAX_ARG_LEN 256
+#define MAX_LINE_LEN 256
 #define FALSE 0
 #define TRUE 1
+#define TASK_COMM_LEN 20
 
 struct node {
     pid_t data;
@@ -16,4 +18,5 @@ int popNode(struct node** head, pid_t pid);
 int destroyList(struct node * head);
 int printList(struct node * head);
 int size(struct node ** head);
+int isEmpty(struct node * head);
 #endif
